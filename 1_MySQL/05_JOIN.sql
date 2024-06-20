@@ -94,19 +94,164 @@ WHERE job_name = '대리';
 
 -- 실습문제 ---
 -- 1. 부서가 인사관리부인 사원들의 사번, 이름, 보너스 조회 (employee, department)
+SELECT * FROM employee; -- emp_id, emp_name, bonus, dept_code
+SELECT * FROM department; -- dept_id, dept_title
+
+-- >> where 구문
+SELECT emp_id, emp_name, bonus
+FROM employee, department
+WHERE dept_code = dept_id
+	AND dept_title = '인사관리부';
+
+-- >> ANSI 구문
+SELECT emp_id, emp_name, bonus
+FROM employee
+	JOIN department ON (dept_code = dept_id)
+WHERE dept_title = '인사관리부';
 
 -- 2. 전체 부서의 부서코드, 부서명, 지역코드, 지역명 조회 (department, location)
+SELECT * FROM department; -- dept_id, dept_title, location_id
+SELECT * FROM location; -- local_code, local_name
+
+SELECT dept_id, dept_title, local_code, local_name
+FROM department
+JOIN location ON (location_id = local_code);
 
 -- 3. 보너스를 받는 사원들의 사번, 사원명, 보너스, 부서명 조회 (employee, department)
+SELECT * FROM employee; -- emp_id, emp_name, bonus, dept_code
+SELECT * FROM department; -- dept_id, dept_title
+
+SELECT emp_id, emp_name, bonus, dept_title
+FROM employee
+	JOIN department ON (dept_code = dept_id)
+WHERE bonus IS NOT NULL;
 
 -- 4. 부서가 총무부가 아닌 사원들의 사원명, 급여 조회 (employee, department)
+SELECT * FROM employee; -- emp_name, salary, dept_code
+SELECT * FROM department; -- dept_id, dept_title
 
+SELECT emp_name, salary
+FROM employee
+	JOIN department ON (dept_code = dept_id)
+WHERE dept_title != '총무부';
 
+/*
+	2. 외부 조인(OUTER JOIN) : MySQL은 ANSI 구문만 가능 
+    - 두 테이블 간의 JOIN 시 일치하지 않는 행도 포함시켜서 조회가 가능하다.
+    - 단, 반드시 기준이 되는 테이블(컬럼)을 지정해야 한다. (LEFT, RIGHT, FULL)
+*/
+-- 사원명, 부서명, 급여, 연봉(급여 * 12) 조회
+SELECT emp_name, dept_title, salary, salary * 12
+FROM employee
+	JOIN department ON (dept_code = dept_id);
+-- > 부서 배치가 안된 사원 2명에 대한 정보 조회 X 
+-- > 부서에 배정된 사원이 없는 부서도 정보 조회 X 
 
+-- 1) LEFT JOIN : 두 테이블 중 왼쪽에 기술된 테이블을 기준으로 JOIN 
+SELECT emp_name, dept_title, salary, salary * 12
+FROM employee
+	LEFT JOIN department ON (dept_code = dept_id);
+    
+-- 2) RIGHT JOIN : 두 테이블 중 오른쪽에 기술된 테이블을 기준으로 JOIN 
+SELECT emp_name, dept_title, salary, salary * 12
+FROM employee
+	RIGHT JOIN department ON (dept_code = dept_id);
+    
+-- 3) FULL JOIN : 두 테이블이 가진 모든 행을 조회할 수 있음 - MySQL X
 
+/*
+	3. 비등가 조인 (NON EQUAL JOIN) 
+    - 매칭시킬 컬럼에 대한 조건 작성시 '='(등호)를 사용하지 않는 조인문 
+    - 값의 범위에 포함되는 행들을 연결하는 방식
+    - ANSI 구문으로는 JOIN ON만 사용 가능! (USING 사용 불가) 
+*/
+SELECT * FROM employee; -- emp_name, salary
+SELECT * FROM sal_grade; -- 급여 등급 테이블 : sal_level, min_sal, max_sal -> salary와 연관!
 
+-- 사원명, 급여, 급여 레벨 조회 
+SELECT emp_name, salary, sal_level
+FROM sal_grade
+	JOIN employee ON (min_sal <= salary AND salary <= max_sal);
+    
+SELECT emp_name, salary, sal_level
+FROM employee, sal_grade 
+WHERE salary BETWEEN min_sal AND max_sal;
 
+/*
+	4. 자체 조인(SELF JOIN)
+    - 같은 테이블을 다시 한번 조인하는 경우 (자기 자신과 조인) 
+*/
+SELECT * FROM employee;
 
+-- 전체 사원의 사원사번(emp_id), 사원명(emp_name), 사원부서코드(dept_code), 사수사번(manager_id)
+--          사수사번(emp_id), 사수명(emp_name), 사수부서코드(dept_code) 조회 
+SELECT 
+	e.emp_id "사원사번", e.emp_name "사원명", 
+    e.dept_code "사원부서코드", e.manager_id "사수사번",
+    m.emp_id "사수사번", m.emp_name "사수명", 
+    m.dept_code "사수부서코드"
+FROM employee e
+LEFT JOIN employee m ON (m.emp_id = e.manager_id);
 
+/*
+	5. 카테시안곱(CARTESIAN PRODUCT) / 교차 조인 (CROSS JOIN)
+    - 조인되는 모든 테이블의 각 행들이 서로서로 모두 매핑된 데이터가 검색된다. (곱집합) 
+    - 두 테이블의 행들이 모두 곱해진 행들의 조합이 출력 -> 방대한 데이터 출력 -> 과부하 위험 
+*/
+-- 사원명, 부서명 조회 (employee - emp_name, department - dept_title)
+-- >> where 구문
+SELECT emp_name, dept_title
+FROM employee, department;
+
+-- >> ANSI 구문 
+SELECT emp_name, dept_title
+FROM employee CROSS JOIN department;
+
+/*
+	6. 다중 JOIN
+    - 여러 개의 테이블을 조인하는 경우 
+*/
+-- 사번, 사원명, 부서명, 직급명 조회 
+SELECT * FROM employee; -- emp_id, emp_name,  dept_code, job_code <-- foreign key (외래키)
+SELECT * FROM department; -- dept_title,      dept_id             <-- primary key (주요키)
+SELECT * FROM job; -- job_name,                          job_code <-- primary key (주요키)
+
+SELECT emp_id, emp_name, dept_title, job_name
+FROM employee
+	JOIN department ON (dept_code = dept_id)
+    JOIN job USING (job_code);
+
+-- 실습 문제 ---
+-- 1. 직급이 대리면서 ASIA 지역에서 근무하는 직원들의 
+--    사번, 직원명, 직급명, 부서명, 근무지역, 급여 조회
+
+-- 2. 70년대생 이면서 여자이고, 성이 전 씨인 직원들의 
+--    직원명, 주민번호, 부서명, 직급명 조회
+
+-- 3. 보너스를 받은 직원들의 직원명, 보너스, 연봉, 부서명, 근무지역 조회 
+
+-- 4. 한국과 일본에서 근무하는 직원들의 직원명, 부서명, 근무지역, 근무국가 조회 
+
+-- 5. 각 부서별 평균 급여를 조회하여 부서명, 평균 급여 조회 
+
+-- 6. 각 부서별 총 급여의 합이 1000만원 이상인 부서명, 급여 합 조회 
+
+-- 7. 사번, 직원명, 직급명, 급여 등급, 구분 조회
+--    이때 구분에 해당하는 값은 아래 참고!
+--    급여 등급이 S1, S2인 경우 '고급'
+--    급여 등급이 S3, S4인 경우 '중급'
+--    급여 등급이 S5, S6인 경우 '초급'
+
+-- 8. 보너스를 받지 않은 직원들 중 직급 코드가 J4 또는 J7인 직원들의 
+--    직원명, 직급명, 급여 조회 
+
+-- 9. 부서가 있는 직원들의 직원명, 직급명, 부서명, 근무지역 조회 
+
+-- 10. 해외영업팀에 근무하는 직원들의 직원명, 직급명, 부서코드, 부서명 조회 
+
+-- 11. 이름에 '형'자가 들어있는 직원들의 사번, 직원명, 직급명 조회 
+
+-- 12. 사번, 사원명, 부서명, 직급명, 지역명, 국가명, 급여등급 조회
+--     참고로 employee, job, department, location, national, sal_grade 
 
 
