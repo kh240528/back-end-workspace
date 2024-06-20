@@ -422,5 +422,3 @@ FROM employee;
 SELECT count(*)
 FROM employee
 WHERE ent_yn = 'Y';
-
-
