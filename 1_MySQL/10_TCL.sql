@@ -54,10 +54,19 @@ WHERE emp_name = '노옹철';
 DELETE FROM emp_salary
 WHERE emp_id IN (213, 218);
 
+-- emp_id가 200인 사원 삭제
+DELETE FROM emp_salary
+WHERE emp_id = 200;
 
-SELECT * FROM dept_copy;
 
+SELECT * FROM emp_salary;
 
+-- DDL 구문을 실행하는 순간 임시 저장된 변경사항들을 무조건 반영! 
+CREATE TABLE test(
+	tid INT
+);
+
+DROP TABLE member;
 CREATE TABLE member(
 	member_no INT AUTO_INCREMENT PRIMARY KEY,
     member_id VARCHAR(30) UNIQUE NOT NULL,
@@ -66,10 +75,10 @@ CREATE TABLE member(
     gender VARCHAR(1) CHECK(gender IN ('M', 'F')),
     address VARCHAR(100),
     phone VARCHAR(20),
-    status CHAR(3) DEFAULT 'N',
+    status CHAR(3) CHECK (status IN ('Y', 'N')) DEFAULT 'N',
     -- status CHAR(3) CHECK(status IN ('Y', 'N')) DEFAULT 'N',
     enroll_date DATE DEFAULT (current_date())
-    CONSTRAINT member_status CHECK (status IN ('Y', 'N'))
+    -- CONSTRAINT member_status_ck -- 
 );
 
 
