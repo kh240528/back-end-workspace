@@ -1,4 +1,4 @@
-package com.kh.step4;
+package com.kh.step4.model;
 
 public class Car {
 
@@ -56,6 +56,8 @@ public class Car {
 		this.gearType = gearType;
 	}
 	
+	// 오버라이딩 : 부모 클래스의 메서드를 자식 클래스에서 다시 재정의
+	@Override
 	public String toString() {
 		return "색상 : " + color + ", 변속기 : " + gearType + ", 문의 개수 : " + door;
 	}

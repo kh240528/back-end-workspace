@@ -1,5 +1,7 @@
 package com.kh.step4;
 
+import com.kh.step4.model.Car;
+
 public class Application {
 
 	public static void main(String[] args) {

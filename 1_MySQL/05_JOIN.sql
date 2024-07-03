@@ -39,6 +39,7 @@ SELECT emp_id, emp_name, dept_code, dept_title
 FROM employee, department
 WHERE dept_code = dept_id; 
 
+
 -- >> ANSI 구문 
 SELECT emp_id, emp_name, dept_code, dept_title
 FROM employee
