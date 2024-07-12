@@ -1,5 +1,6 @@
 package com.kh.practice;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -11,12 +12,18 @@ public class Application {
 	
 	Scanner sc = new Scanner(System.in);
 	BookController bc = new BookController();
-	Book[] books = {new Book("밥을 지어요", true, 0), 
-				new Book("오늘은 아무래도 덮밥", false, 0), 
-				new Book("원피스 108", false, 15), 
-				new Book("귀멸의 칼날 23", false, 19)};
+	
+	ArrayList<Book> books = new ArrayList<>();
+	
+	{
+		books.add(new Book("밥을 지어요", true, 0));
+		books.add(new Book("오늘은 아무래도 덮밥", false, 0));
+		books.add(new Book("원피스 108", false, 15));
+		books.add(new Book("귀멸의 칼날 23", false, 19));
+	}
 	
 	public static void main(String[] args) {
+		
 		Application app = new Application();
 		app.menu();
 	}
@@ -43,12 +50,7 @@ public class Application {
 				System.out.println(bc.myPage());
 				break;
 			case 2:
-				for(int i = 0; i < books.length; i++) {
-					System.out.println((i+1) + "번 도서 : " + books[i]);
-				}
-				System.out.print("대여할 도서 번호 선택 : ");
-				int select = Integer.parseInt(sc.nextLine());
-				System.out.println(bc.rentBook(books[select-1]));
+				rent();
 				break;
 			case 3:
 				close = false;
@@ -58,5 +60,20 @@ public class Application {
 		}
 		
 	}
+	
+	public void rent() {
+		for(int i = 0; i < books.size(); i++) {
+			System.out.println((i+1) + "번 도서 : " + books.get(i));
+		}
+		System.out.print("대여할 도서 번호 선택 : ");
+		int select = Integer.parseInt(sc.nextLine());
+		System.out.println(bc.rentBook(books.get(select-1)));
+	}
+	
+	
+	
+	
+	
+	
 
 }
