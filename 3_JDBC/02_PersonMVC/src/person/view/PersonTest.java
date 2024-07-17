@@ -1,8 +1,10 @@
 package person.view;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import person.controller.PersonController;
+import person.model.Person;
 
 public class PersonTest {
 	
@@ -17,7 +19,11 @@ public class PersonTest {
 			// person 테이블에 데이터 추가
 			//pt.addPerson("박세영", 5, "서울");
 			//pt.addPerson("배영운", 6, "경기");
-			pt.addPerson("이동호", 7, "서울");
+			//pt.addPerson("이동호", 7, "서울");
+			//pt.updatePerson(new Person(1, "김진주", 8, "제주"));
+			//pt.removePerson(1);
+			//pt.searchAllPerson();
+			pt.searchPerson(2);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,20 +41,35 @@ public class PersonTest {
 	}
 	
 	// person 테이블에 데이터 수정 - UPDATE
-	public void updatePerson() {
-		// ~~님, 정보 수정 완료!
+	public void updatePerson(Person person) throws SQLException {
+		String name = pc.updatePerson(person);
+		if(name!=null) {
+			System.out.println(name + "님, 정보 수정 완료!");
+		}
 	}
 
 	// person 테이블에 데이터 삭제 - DELETE 
-	public void removePerson() {
-		// ~~님, 회원탈퇴 완료!
+	public void removePerson(int id) throws SQLException {
+		String name = pc.removePerson(id);
+		if(name!=null) {
+			System.out.println(name + "님, 회원탈퇴 완료!");
+		}
 	}
 	
 	// person 테이블에 있는 데이터 전체 보여주기 - SELECT
-	public void searchAllPerson() {}
+	public void searchAllPerson() throws SQLException {
+		
+		ArrayList<Person> list = pc.searchAllPerson();
+		for(Person p : list) {
+			System.out.println(p);
+		}
+	}
 	
 	// person 테이블에서 데이터 한개만 가져오기 - SELECT
-	public void searchPerson() {}
+	public void searchPerson(int id) throws SQLException {
+		Person p = pc.searchPerson(id);
+		System.out.println(p);
+	}
 	
 	
 }
