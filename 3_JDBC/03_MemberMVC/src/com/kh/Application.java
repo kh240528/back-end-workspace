@@ -18,7 +18,7 @@ public class Application {
 		try {
 			app.mainMenu();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			
 		}
 	}
 	
@@ -80,9 +80,18 @@ public class Application {
 		String password = sc.nextLine();
 		
 		// MemberController의 login 메서드 반환 결과를 이름으로 받고
-		// 이름이 null이 아니면 "~~님, 환영합니다!" 출력 --> login 성공! 성공했다면 memberMenu() 호출
-		// null이면 "틀린 아이디 또는 비밀번호입니다. 다시 입력해주세요." 출력
-
+		String name = mc.login(id, password);
+		
+		if(name!=null) {
+			// 이름이 null이 아니면 "~~님, 환영합니다!" 출력 
+			//  --> login 성공! 성공했다면 memberMenu() 호출
+			System.out.println(name + "님, 환영합니다!");
+			memberMenu();
+		} else {
+			// null이면 "틀린 아이디 또는 비밀번호입니다. 다시 입력해주세요." 출력
+			System.out.println("틀린 아이디 또는 비밀번호입니다. 다시 입력해주세요.");
+		}
+		
 	}
 	
 	public void memberMenu() throws SQLException {
@@ -119,8 +128,15 @@ public class Application {
 		String newPassword = sc.nextLine();
 		
 		// MemberController의 changePassword 메서드 반환 결과에 따라
-		// true면 "비밀번호 변경에 성공했습니다." 출력
-		// false면 "비밀번호 변경에 실패했습니다. 다시 입력해주세요." 출력		
+		if(mc.changePassword(id, password, newPassword)) {
+			// true면 "비밀번호 변경에 성공했습니다." 출력
+			System.out.println("비밀번호 변경에 성공했습니다.");
+		} else {
+			// false면 "비밀번호 변경에 실패했습니다. 다시 입력해주세요." 출력
+			System.out.println("비밀번호 변경에 실패했습니다. 다시 입력해주세요.");
+		}
+		
+				
 	}
 
 	public void changeName() throws SQLException {
@@ -132,10 +148,23 @@ public class Application {
 		String password = sc.nextLine();
 		
 		// 사용자가 맞는지 확인 후 - MemberController의 login 메서드 활용
-		// 이름이 null이 아니면 
-		//  --> "현재 설정된 이름 : OOO" 출력
-		//  --> 변경할 이름을 사용자한테 입력받아 MemberController의 changeName 메서드로 이름 변경 후 "이름 변경에 성공하였습니다." 출력
-		// 이름이 null이면 "이름 변경에 실패했습니다. 다시 입력해주세요." 출력
+		String name = mc.login(id, password);
+		
+		if(name!=null) {
+			// 이름이 null이 아니면 
+			//  --> "현재 설정된 이름 : OOO" 출력
+			System.out.println("현재 설정된 이름 : " + name);
+			//  --> 변경할 이름을 사용자한테 입력받아 
+			System.out.print("변경할 이름 : ");
+			String newName = sc.nextLine();
+			// MemberController의 changeName 메서드로 이름 변경 후
+			mc.changeName(id, newName);
+			//  "이름 변경에 성공하였습니다." 출력
+			System.out.println("이름 변경에 성공하였습니다.");
+		} else {
+			// 이름이 null이면 "이름 변경에 실패했습니다. 다시 입력해주세요." 출력
+			System.out.println("이름 변경에 실패했습니다. 다시 입력해주세요.");
+		}
 
 	}
 

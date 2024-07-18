@@ -57,48 +57,90 @@ public class MemberController {
 		close(ps, conn);
 	}
 	
+	public boolean idCheck(String id) throws SQLException {
+		Connection conn = connect();
+		PreparedStatement ps = conn.prepareStatement(p.getProperty("idCheck"));
+		ps.setString(1, id);
+		
+		ResultSet rs = ps.executeQuery();
+		String checkId = null;
+		
+		if(rs.next()) checkId = rs.getString("id");
+		close(rs, ps, conn);
+		
+		if(checkId!=null) return true;
+		return false;
+	}
 	
 	
-	public boolean signUp(Member m) {
+	public boolean signUp(Member m) throws SQLException {
 
 		// 회원가입 기능 구현! 
+		
 		// -> 아이디가 기존에 있는지 체크 여부!
-		// -> member 테이블에 데이터 추가! 
-		try {
-			Connection conn = connect();
+		if(!idCheck(m.getId())) {
+			// -> member 테이블에 데이터 추가! 
+			Connection conn= connect();
 			PreparedStatement ps = conn.prepareStatement(p.getProperty("signUp"));
-			ps.setString(1, m.getId());
+			ps.setString(1,m.getId());
 			ps.setString(2, m.getPassword());
 			ps.setString(3, m.getName());
 			
 			ps.executeUpdate();
-			close(ps, conn);
+			close(ps,conn);
 			return true;
-	
-		} catch (SQLException e) {
-			return false;
-		} 
+		}
+		
+		return false;
 
 	}
 	
-	public void login() {
+	public String login(String id, String password) throws SQLException {
 
 		// 로그인 기능 구현! 
 		// -> member 테이블에서 id와 password로 멤버 정보 하나 가져오기!
+		Connection conn = connect();
+		PreparedStatement ps = conn.prepareStatement(p.getProperty("login"));
+		ps.setString(1, id);
+		ps.setString(2, password);
+		
+		ResultSet rs = ps.executeQuery();
+		String name = null;
+		
+		if(rs.next()) name = rs.getString("name");
+		close(rs, ps, conn);
+		
+		return name;
 		
 	}
 	
-	public void changePassword() {
+	public boolean changePassword(String id, String oldPw, String newPw) throws SQLException {
 
 		// 비밀번호 바꾸기 기능 구현!
-		// -> login 메서드 활용 후 사용자 이름이 null이 아니면 member 테이블에서 id로 새로운 패스워드로 변경
-
+		// -> login 메서드 활용 후 사용자 이름이 null이 아니면 
+		//    member 테이블에서 id로 새로운 패스워드로 변경
+		if(login(id, oldPw)!=null) {
+			Connection conn = connect();
+			PreparedStatement ps = conn.prepareStatement(p.getProperty("changePassword"));
+			ps.setString(1, newPw);
+			ps.setString(2, id);
+			ps.executeUpdate();
+			close(ps, conn);
+			return true;
+		}
+		return false;
 	}
 	
-	public void changeName() {
+	public void changeName(String id, String newName) throws SQLException {
 
 		// 이름 바꾸기 기능 구현!
 		// -> member 테이블에서 id로 새로운 이름으로 변경 
+		Connection conn = connect();
+		PreparedStatement ps = conn.prepareStatement(p.getProperty("changeName"));
+		ps.setString(1, newName);
+		ps.setString(2, id);
+		ps.executeUpdate();
+		close(ps, conn);
 		
 	}
 	
