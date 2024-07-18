@@ -2,12 +2,17 @@ package com.kh;
 
 import java.util.Scanner;
 
+import com.kh.model.Member;
+
 // 스키마 : sample
 // 테이블 : member, book, publisher, rent
 
 public class Application {
 
 	private Scanner sc = new Scanner(System.in);
+	
+	// 로그인 했을 시 사용자 정보를 담는 객체!
+	private Member member = new Member();
 
 	public static void main(String[] args) {
 
@@ -60,6 +65,7 @@ public class Application {
 	// 2. 책 등록
 	public void registerBook() {
 		// 책 제목, 책 저자를 사용자한테 입력 받아
+		// 기존 제목, 저자 있으면 등록 안되게!
 		// 등록에 성공하면 "성공적으로 책을 등록했습니다." 출력
 		// 실패하면 "책을 등록하는데 실패했습니다." 출력
 	}
@@ -127,7 +133,7 @@ public class Application {
 	// 2. 내가 대여한 책 조회
 	public void printRentBook() {
 		// 내가 대여한 책들을 반복문을 이용하여 조회
-		// 대여 번호, 책 제목, 책 저자, 대여 날짜, 반납 기한 조회
+		// 대여 번호, 책 제목, 책 저자, 대여 날짜, 반납 기한(+14일) 조회
 	}
 
 	// 3. 대여 취소
