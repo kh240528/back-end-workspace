@@ -11,7 +11,7 @@ import com.kh.model.Member;
 public class Application {
 	
 	private Scanner sc = new Scanner(System.in);
-	private MemberController mc = new MemberController();
+	private MemberController mc = MemberController.getInstance();
 
 	public static void main(String[] args) {
 		Application app = new Application();
@@ -61,8 +61,14 @@ public class Application {
 		String name = sc.nextLine();
 		
 		// MemberController의 signUp 메서드 반환 결과에 따라
-		// true면 "성공적으로 회원가입 완료하였습니다." 출력
-		// false면 "중복된 아이디입니다. 다시 입력해주세요." 출력
+		if(mc.signUp(new Member(id, password, name))) {
+			// true면 "성공적으로 회원가입 완료하였습니다." 출력
+			System.out.println("성공적으로 회원가입 완료하였습니다.");
+		} else {
+			// false면 "중복된 아이디입니다. 다시 입력해주세요." 출력
+			System.out.println("중복된 아이디입니다. 다시 입력해주세요.");
+		}
+		
 	}
 
 	public void login() throws SQLException {
