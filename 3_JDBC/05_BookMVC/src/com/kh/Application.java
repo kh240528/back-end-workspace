@@ -1,10 +1,14 @@
 package com.kh;
 
+import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Scanner;
 
 import com.kh.controller.BookController;
 import com.kh.controller.MemberController;
+import com.kh.controller.RentController;
 import com.kh.model.vo.Member;
+import com.kh.model.vo.Rent;
 import com.kh.model.vo.Book;
 
 // 스키마 : sample
@@ -19,6 +23,7 @@ public class Application {
 	
 	private BookController bc = new BookController();
 	private MemberController mc = new MemberController();
+	private RentController rc = new RentController();
 
 	public static void main(String[] args) {
 
@@ -187,36 +192,66 @@ public class Application {
 
 	// 1. 책 대여
 	public void rentBook() {
-		// 같은 책을 여러 사용자가 대여할 수 있는지? 책이 1권이라고 가정!
-		// 다른 사람은 대여 못하게! 본인 뿐만 아니라 다른 사람도 대여 못하게!
-		// 기존 정보 삭제 후에 진행할게요!
 		// printBookAll 메서드 호출하여 전체 책 조회 출력 후
+		printBookAll();
 		// 대여할 책 번호 선택을 사용자한테 입력 받아
-		// 이미 대여된 책은 대여 불가!
-		// 대여에 성공하면 "성공적으로 책을 대여했습니다." 출력
+		System.out.print("대여할 책 번호 : ");
+		int no = Integer.parseInt(sc.nextLine());
 		
+		if(rc.rentBook(member.getMemberNo(), no)) {
+			// 대여에 성공하면 "성공적으로 책을 대여했습니다." 출력
+			System.out.println("성공적으로 책을 대여했습니다.");
+		} else {
+			// 실패하면 "책을 대여하는데 실패했습니다." 출력
+			System.out.println("책을 대여하는데 실패했습니다.");
+		}
+			
 	}
 
 	// 2. 내가 대여한 책 조회
 	public void printRentBook() {
 		// 내가 대여한 책들을 반복문을 이용하여 조회
-		// 대여 번호, 책 제목, 책 저자, 대여 날짜, 반납 기한(+14일) 조회
+		for(Rent rent : rc.printRentBook(member.getMemberNo())) {
+		
+			LocalDate localDate = new Date(rent.getRentDate().getTime()).toLocalDate();
+			// 대여 번호, 책 제목, 책 저자, 대여 날짜, 반납 기한(+14일) 조회
+			System.out.println("대여 번호 : " + rent.getRentNo()
+								+ " / 책 제목 : " + rent.getBook().getBkTitle()
+								+ " / 책 저자 : " + rent.getBook().getBkAuthor()
+								+ " / 대여 날짜 : " + rent.getRentDate()
+								+ " / 반납 기한 : " + localDate.plusDays(14)
+					);
+		}
 	}
 
 	// 3. 대여 취소
 	public void deleteRent() {
 		// printRentBook 매서드 호출하여 내가 대여한 책 조회 출력 후
+		printRentBook();
+		
 		// 취소할 대여 번호 선택을 사용자한테 입력 받아
-		// 취소에 성공하면 "성공적으로 대여를 취소했습니다." 출력
-		// 실패하면 "대여를 취소하는데 실패했습니다." 출력
+		System.out.print("취소할 대여 번호 : ");
+		int no = Integer.parseInt(sc.nextLine());
+		
+		if(rc.deleteRent(no)) {
+			// 취소에 성공하면 "성공적으로 대여를 취소했습니다." 출력
+			System.out.println("성공적으로 대여를 취소했습니다.");
+		} else {
+			// 실패하면 "대여를 취소하는데 실패했습니다." 출력
+			System.out.println("대여를 취소하는데 실패했습니다.");
+		}
+
 	}
 
-	// 4. 회원탈퇴
+	// 5. 회원탈퇴
 	public void deleteMember() {
-		// 회원탈퇴할 때 대여중인 책 있으면 탈퇴 못하게 막을까요?
-		// 아님 회원탈퇴시 대여중인 책들 모두 기록 삭제할까요?
-		// 회원탈퇴에 성공하면 "회원탈퇴 하였습니다 ㅠㅠ" 출력
-		// 실패하면 "회원탈퇴하는데 실패했습니다." 출력
+		if(mc.deleteMember(member.getMemberNo())) {
+			// 회원탈퇴에 성공하면 "회원탈퇴 하였습니다 ㅠㅠ" 출력
+			System.out.println("회원탈퇴 하였습니다 ㅠㅠ");
+		} else {
+			// 실패하면 "회원탈퇴하는데 실패했습니다." 출력
+			System.out.println("회원탈퇴하는데 실패했습니다.");
+		}
 	}
 
 }
