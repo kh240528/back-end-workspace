@@ -55,6 +55,7 @@ public class RegisterServlet extends HttpServlet {
 //		}
 		//                결과 페이지 1개
 		request.setAttribute("check", check);
+		request.setAttribute("name", name);
 		request.getRequestDispatcher("result.jsp").forward(request, response);
 		
 	}

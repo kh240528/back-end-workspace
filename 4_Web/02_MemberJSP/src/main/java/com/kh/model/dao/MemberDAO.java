@@ -69,6 +69,22 @@ public class MemberDAO {
 		return list;
 	}
 	
+	public Member searchMember(String id) throws SQLException {
+		Connection conn = connect();
+		
+		String query = "SELECT * FROM member WHERE id = ?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		
+		ps.setString(1, id);
+		
+		ResultSet rs = ps.executeQuery();
+		Member member = null;
+		if(rs.next()) member = new Member(id, rs.getString("password"), rs.getString("name"));
+		
+		close(rs, ps, conn);
+		return member;
+	}
+	
 }
 
 
