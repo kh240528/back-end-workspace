@@ -5,11 +5,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.dao.MemberDAO;
 import model.vo.Member;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet("/front")
 public class DispatcherServlet extends HttpServlet {
@@ -29,6 +31,8 @@ public class DispatcherServlet extends HttpServlet {
 	 *  
 	 * 코드 유지보수성을 위해서 바꿈!! 그리고 스프링 프레임워크 구조이기도 함  
 	 * */
+	
+	MemberDAO dao = new MemberDAO();
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 요청이 어디에서 들어온 요청인지 값을 하나 더 받는다 - command
@@ -38,6 +42,14 @@ public class DispatcherServlet extends HttpServlet {
 		try {
 			if(command.equals("register")) {
 				path = register(request, response);
+			} else if(command.equals("login")) {
+				path = login(request, response);
+			} else if(command.equals("search")) {
+				path = search(request, response);
+			} else if(command.equals("allMember")) {
+				path = allMember(request, response);
+			} else if(command.equals("logout")) {
+				path = logout(request, response);
 			}
 			
 			request.getRequestDispatcher(path).forward(request, response);
@@ -53,10 +65,52 @@ public class DispatcherServlet extends HttpServlet {
 		String pwd = request.getParameter("password");
 		String name = request.getParameter("name");
 		Member member = new Member(id,pwd,name);
-		
-		MemberDAO dao = new MemberDAO();
+
 		dao.register(member);
 		
+		return "index.jsp";
+	}
+	
+	protected String login(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
+		
+		Member member = dao.login(id, password);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("member", member);
+		
+		return "index.jsp";
+	}
+	
+	protected String search(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		String id = request.getParameter("id");
+
+		Member member = dao.search(id);
+		
+		if(member!=null) {
+			request.setAttribute("member", member);
+			return "/views/search_ok.jsp";
+		} 
+
+		return "/views/search_fail.jsp";
+	}
+	
+	protected String allMember(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		MemberDAO dao = new MemberDAO();
+		List<Member> list = dao.all();
+		
+		request.setAttribute("list", list);
+		
+		return "/views/allMember.jsp";
+	}
+	
+	protected String logout(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		HttpSession session = request.getSession();
+		Member member = (Member) session.getAttribute("member");
+		if(member!=null) {
+			session.invalidate();
+		}
 		return "index.jsp";
 	}
 

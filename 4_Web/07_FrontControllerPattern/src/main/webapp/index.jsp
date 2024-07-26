@@ -37,9 +37,9 @@
 						  성공하면 views/search_ok.jsp 해당 정보 출력
 						  실패하면 views/search_fail.jsp "검색 실패했습니다" 출력
 			 -->
-			<li><a href="/allMember">전체회원보기</a></li>
+			<li><a href="/front?command=allMember">전체회원보기</a></li>
 			<!-- 전체회원보기 : views/allMember.jsp에 리스트 출력 -->
-			<li><a href="/logout">로그아웃</a></li>
+			<li><a href="/front?command=logout">로그아웃</a></li>
 			<!-- 로그아웃 : 로그아웃하고 index.jsp로! -->
 			</c:otherwise>
 		</c:choose>
