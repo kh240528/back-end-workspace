@@ -4,24 +4,22 @@ import controller.Controller;
 import controller.ModelAndView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.dao.MemberDAO;
 import model.vo.Member;
 
-/*
- * 컴포넌트
- * - 인터페이스 기반으로 작성된 재사용성이 강한 자바 클래스
- * */
-public class RegisterController implements Controller {
+public class LoginController implements Controller {
 
 	@Override
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String id = request.getParameter("id");
-		String pwd = request.getParameter("password");
-		String name = request.getParameter("name");
-		Member member = new Member(id,pwd,name);
-
+		String password = request.getParameter("password");
+		
 		MemberDAO dao = new MemberDAO();
-		dao.register(member);
+		Member member = dao.login(id, password);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("member", member);
 		
 		return new ModelAndView("index.jsp", true);
 	}
