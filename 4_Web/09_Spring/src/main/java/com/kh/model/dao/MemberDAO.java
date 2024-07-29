@@ -1,4 +1,4 @@
-package model.dao;
+package com.kh.model.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.vo.Member;
+import org.springframework.stereotype.Repository;
 
+import com.kh.model.vo.Member;
+
+@Repository
 public class MemberDAO {
 
 	public MemberDAO() {

@@ -1,4 +1,4 @@
-<%@page import="model.vo.Member"%>
+<%@page import="com.kh.model.vo.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
@@ -15,7 +15,7 @@
 		<c:choose>
 			<c:when test="${empty member}">
 			<!-- 로그인 되어 있지 않은 경우 -->
-			<li><a href="/views/register.jsp">회원가입</a></li>
+			<li><a href="/register">회원가입</a></li>
 			<!-- 회원가입 : 아이디, 비밀번호, 이름 입력 받아서
 						  호출 : /register, 방식 : post
 						  RegisterServlet
