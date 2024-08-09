@@ -42,7 +42,27 @@ public class AjaxController {
 		}
 	}
 	
+	@ResponseBody
+	@PostMapping("/serial")
+	public Member serial(Member member) {
+		System.out.println(member);
+		service.register(member);
+		return member;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -17,6 +17,10 @@ public class MemberService {
 		return mapper.idCheck(id);
 	}
 	
+	public void register(Member vo) {
+		mapper.register(vo);
+	}
+	
 }
 
 

@@ -3,4 +3,8 @@
 	<select id="idCheck" parameterType="String" resultType="Member">
 		SELECT * FROM member WHERE id = #{id}
 	</select>
+	<insert id="register" parameterType="Member">
+		INSERT INTO member
+		VALUES(#{id}, #{password}, #{name})
+	</insert>
 </mapper>
