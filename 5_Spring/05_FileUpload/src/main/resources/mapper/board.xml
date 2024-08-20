@@ -11,6 +11,10 @@
 		LIMIT #{offset}, #{limit}
 	</select>
 	
+	<select id="total" resultType="int">
+		SELECT count(*) FROM board
+	</select>
+	
 	<select id="select" parameterType="int" resultType="Board">
 		SELECT * FROM board 
 		WHERE no = #{no}

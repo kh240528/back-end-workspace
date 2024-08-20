@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.upload.model.vo.Board;
+import com.kh.upload.model.vo.Paging;
 import com.kh.upload.service.BoardService;
 
 @Controller
@@ -64,9 +65,9 @@ public class BoardController {
 	}
 
 	@GetMapping("/list")
-	public String list(Model model) {
+	public String list(Model model, Paging paging) {
 
-		List<Board> list = service.selectAll();
+		List<Board> list = service.selectAll(paging);
 
 		for (Board b : list) {
 			LocalDateTime date = b.getDate();
@@ -75,6 +76,7 @@ public class BoardController {
 		}
 
 		model.addAttribute("list", list);
+		model.addAttribute("paging", new Paging(paging.getPage(), service.total()));
 
 		return "list";
 	}
